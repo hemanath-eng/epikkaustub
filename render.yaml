@@ -6,6 +6,8 @@ services:
     buildCommand: pip install -r scripts/requirements.txt
     startCommand: python scripts/sync_followups.py
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
       - key: EPIK_DATABASE_URL
         sync: false
       - key: SUPABASE_DB_URL
