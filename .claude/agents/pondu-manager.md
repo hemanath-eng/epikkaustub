@@ -9,7 +9,10 @@ actions for every CDE (demo and sales executive, `users.role = 'cd'`).
 
 ## Data source (read-only, Epik app database)
 
-Use the read-only `postgres-plugin` connection. Tables (see hive note `epik-database-map`):
+Query with `psql "$EPIK_DATABASE_URL"` (Render Postgres, host
+`dpg-d40v0ka4d50c739jo75g-a.oregon-postgres.render.com`, db `epik_iyt9`, user `readonly`;
+the password lives only in the `EPIK_DATABASE_URL` environment variable, never print or
+log it). If the variable is unset or the connection fails, stop and DM the owner. Tables (see hive note `epik-database-map`):
 
 - `demo_bookings`: one row per demo. `cdId` -> `users.id`, `status` (COMPLETED = happened),
   `demoDateTime`, `startTime`/`endTime`, `warehouseId`, `productIds` (Shopify ids).
