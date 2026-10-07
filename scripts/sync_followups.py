@@ -5,8 +5,11 @@ pondu-manager agent reads. Only CDE, customer first+last name and product are co
 No insights, feedback, phones or addresses.
 
 Env: EPIK_DATABASE_URL (read-only source), SUPABASE_DB_URL (target, write),
-     CUSTOMER_NAME_SQL (SQL expression for the customer's full name on demo_bookings
-     alias `d`, e.g.  trim(d."customerFirstName" || ' ' || d."customerLastName")).
+     CUSTOMER_NAME_SQL (SQL expression for the customer's full name, using alias `d` for
+     demo_bookings and `c` for the customer table, e.g.
+     trim(c."firstName" || ' ' || c."lastName")),
+     CUSTOMER_JOIN_SQL (optional join giving alias `c`, e.g.
+     left join users c on c.id = d."customerId").
 """
 import os
 import sys
@@ -21,6 +24,7 @@ select d.id::text,
        (select string_agg(p.title, ', ') from products p where p."shopifyId"::text = any(d."productIds"::text[]))
 from demo_bookings d
 join users u on u.id = d."cdId"
+{os.environ.get('CUSTOMER_JOIN_SQL', '')}
 where d.status = 'COMPLETED'
   and (d."demoDateTime" at time zone 'UTC' at time zone 'Asia/Kolkata')::date
       = (now() at time zone 'Asia/Kolkata')::date - 1

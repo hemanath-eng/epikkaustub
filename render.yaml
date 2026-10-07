@@ -12,3 +12,5 @@ services:
         sync: false
       - key: CUSTOMER_NAME_SQL
         sync: false
+      - key: CUSTOMER_JOIN_SQL
+        sync: false
