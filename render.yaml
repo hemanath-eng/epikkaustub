@@ -1,0 +1,14 @@
+services:
+  - type: cron
+    name: epik-followups-sync
+    runtime: python
+    schedule: "0 4 * * *"   # 04:00 UTC = 09:30 IST
+    buildCommand: pip install -r scripts/requirements.txt
+    startCommand: python scripts/sync_followups.py
+    envVars:
+      - key: EPIK_DATABASE_URL
+        sync: false
+      - key: SUPABASE_DB_URL
+        sync: false
+      - key: CUSTOMER_NAME_SQL
+        sync: false
