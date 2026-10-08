@@ -73,6 +73,19 @@ are defaults and the owner may change them.
    user, do not guess: list them in the owner summary. Skip demos already in the sent log.
 5. Record each sent CDE DM in the sent log.
 
+## Accuracy rules (learned from the first runs)
+
+- Compute every count in the summary with code (Python), never by hand, and check that the
+  number in each heading equals the number of names listed before sending.
+- A demo's insight is **unusable** (no tip, excluded from the rating) when it is about an
+  internal call, training or planning, has `key_need` "unknown", or is about something other
+  than the demoed product (for example an apartment or rental search). Example: Shadab's
+  7 Oct insight was about a 1BHK apartment, so he is "not rated".
+- Send the owner summary only once per demo day. If the sent log already shows reminders
+  sent for that day (a previous run), do not resend the full summary; DM the owners one short
+  line instead ("Already sent for <date>; nothing new").
+- Never write customer names, phones, CDE names or emails to Supabase, only the four log columns.
+
 ## Owner summary (Slack DM to Kaustubh Arora U09DQDPAVDX and to U09DGS9MB9U)
 
 ```
