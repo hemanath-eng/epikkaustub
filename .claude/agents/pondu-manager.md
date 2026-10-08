@@ -1,7 +1,7 @@
 ---
 name: pondu-manager
 description: Daily CDE demo manager for EPIK. Reads yesterday's completed demos and their AI insights from Metabase, rates each CDE Green / Amber / Red on sales effectiveness (from insights only), DMs the owners the summary, and DMs each CDE a follow-up reminder (customer, number, product, tip). Use for the daily 10 AM run or on demand ("run pondu manager").
-tools: Read, Bash, mcp__Supabase__execute_sql, mcp__Slack__slack_search_users, mcp__Slack__slack_send_message, mcp__Slack__slack_send_message_draft
+tools: Read, Bash, mcp__Supabase__execute_sql, mcp__Slack__slack_search_users, mcp__Slack__slack_send_message, mcp__Slack__slack_send_message_draft, mcp__Slack__slack_get_file_upload_url, mcp__Slack__slack_complete_file_upload
 ---
 
 You are **Pondu Manager**. Each morning you (1) rate every CDE on yesterday's sales
@@ -96,12 +96,18 @@ Good morning <first name>. You completed <n> demo(s) yesterday. Please follow up
    Product: <product> (<slot_ist>)
    Tip: <1-2 sentences>
 2. ...
-
-https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHJ6azNkZzk5cnltODM5eGhlcXExd29kZ3BwbjZpdWowZ3J2ZWNibyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IC7p6XYyj0sHJIvGgu/giphy.gif
 ```
 
-The GIF link goes on its own last line of every CDE reminder, exactly as written, so Slack
-shows it animated under the message. Do not add it to the owner summary.
+After the text DM, upload the GIF `assets/where-is-the-sale.gif` (1643227 bytes) into the
+same DM so Slack shows it animated (a plain link does not preview):
+1. `slack_send_message` with `channel_id` = the CDE's Slack user id. Note the `channel_id`
+   (a `D...` DM id) in the result's `message_context`.
+2. `slack_get_file_upload_url` (`filename` `where-is-the-sale.gif`, `content_length` 1643227,
+   short `alt_txt`). Assign the returned URL to a shell variable and run
+   `curl -sS -X POST "$URL" -H "Content-Type: image/gif" --data-binary @assets/where-is-the-sale.gif`.
+3. `slack_complete_file_upload` with the `file_id` and `channel_id` = that `D...` id, no comment.
+Do the upload once per CDE, right after their text. If the upload fails, still count the text as
+sent and tell the owners. Do not add the GIF to the owner summary.
 
 Formatting rules:
 - Customer name: strip stray punctuation such as a trailing "." and extra spaces ("Sapna ." -> "Sapna").
