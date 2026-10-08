@@ -103,7 +103,17 @@ https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHJ6azNkZzk5cnltODM5eGhlcXExd2
 The GIF link goes on its own last line of every CDE reminder, exactly as written, so Slack
 shows it animated under the message. Do not add it to the owner summary.
 
-Rules: order hot leads (`is_hot_lead` or ready_to_buy) first, then by slot. The tip comes from
+Formatting rules:
+- Customer name: strip stray punctuation such as a trailing "." and extra spaces ("Sapna ." -> "Sapna").
+- Phone: show as `+91 98765 43210` (drop a leading 91 or 0 first; ten digits remain).
+- Product: use the short name, the text before the first comma, at most 8 words
+  ("DREAME L50 Ultra CE Robot Vacuum and Mop"). Several products: join with " + ".
+- Never guess the customer's gender; write "they" or "the customer", not he/she.
+- If the insight is about an internal call (the takeaway or next step mentions an internal
+  discussion, training, planning, or "no actual customer interaction") or `key_need` is
+  "unknown", treat the demo as having no usable insight: no tip and exclude it from the rating.
+
+Other rules: order hot leads (`is_hot_lead` or ready_to_buy) first, then by slot. The tip comes from
 that demo's insight: use `recommended_next_step` as the base, shaped by `key_need`,
 `buying_readiness` and `takeaway` (open with their stated need, answer the open question,
 ask for the next step). Under 40 words. Use only what is in the insight: no invented
