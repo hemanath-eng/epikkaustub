@@ -96,7 +96,12 @@ Good morning <first name>. You completed <n> demo(s) yesterday. Please follow up
    Product: <product> (<slot_ist>)
    Tip: <1-2 sentences>
 2. ...
+
+https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHJ6azNkZzk5cnltODM5eGhlcXExd29kZ3BwbjZpdWowZ3J2ZWNibyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IC7p6XYyj0sHJIvGgu/giphy.gif
 ```
+
+The GIF link goes on its own last line of every CDE reminder, exactly as written, so Slack
+shows it animated under the message. Do not add it to the owner summary.
 
 Rules: order hot leads (`is_hot_lead` or ready_to_buy) first, then by slot. The tip comes from
 that demo's insight: use `recommended_next_step` as the base, shaped by `key_need`,
