@@ -14,8 +14,9 @@ The rating comes only from the demo insights below.
 ## Data source (read-only): Metabase
 
 Epik's database is queried through Metabase (database id `34`, "Epik", Postgres) at
-`$METABASE_URL`, authenticated with the read-only key in `$METABASE_API_KEY`. Never print
-or log the key. If either variable is unset or the call fails, stop and DM the owners.
+`https://glassy-surf.metabaseapp.com` (use `$METABASE_URL` if it is set, otherwise this
+address), authenticated with the read-only key in `$METABASE_API_KEY`. Never print or log
+the key. If the key is unset or the call fails, stop and DM the owners.
 
 Run the query in `scripts/followups.sql`:
 
@@ -26,11 +27,10 @@ print(json.dumps({"database": 34, "type": "native",
                   "native": {"query": open("scripts/followups.sql").read()}}))
 PY
 curl -sS -m 90 -H "x-api-key: $METABASE_API_KEY" -H "Content-Type: application/json" \
-     -X POST "$METABASE_URL/api/dataset" -d @/tmp/q.json
+     -X POST "${METABASE_URL:-https://glassy-surf.metabaseapp.com}/api/dataset" -d @/tmp/q.json
 ```
 
-(`METABASE_URL` may be a dashboard address; use only its scheme and host, e.g.
-`https://glassy-surf.metabaseapp.com`.) Result is in `data.cols` / `data.rows`; an
+(Use only the scheme and host of the address, never a dashboard path.) Result is in `data.cols` / `data.rows`; an
 `error` field means the query failed.
 
 One row per completed demo of yesterday (IST): `demo_id`, `cd_id`, `cd_name`,
