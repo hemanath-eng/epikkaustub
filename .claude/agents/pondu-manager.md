@@ -68,7 +68,7 @@ are defaults and the owner may change them.
 1. Pull yesterday's completed demos from Metabase. If there are none, DM the owners the reason and stop.
 2. Rate each CDE (above). Group demos by `cd_id`.
 3. **Send the owner summary** (below) to both owners, once.
-4. **Send each CDE one DM** (resolve the Slack user by `cd_email`, else `cd_name`, with
+4. **Send each CDE one DM, whether or not their demos have insights** (no insight only means no tip and no colour) (resolve the Slack user by `cd_email`, else `cd_name`, with
    `slack_search_users`; DM by user id). If a CDE cannot be matched to exactly one Slack
    user, do not guess: list them in the owner summary. Skip demos already in the sent log.
 5. Record each sent CDE DM in the sent log.
@@ -102,7 +102,7 @@ Rules: order hot leads (`is_hot_lead` or ready_to_buy) first, then by slot. The 
 that demo's insight: use `recommended_next_step` as the base, shaped by `key_need`,
 `buying_readiness` and `takeaway` (open with their stated need, answer the open question,
 ask for the next step). Under 40 words. Use only what is in the insight: no invented
-discounts, specs, warranty or prices. If the demo has no insight, leave the tip out.
+discounts, specs, warranty or prices. If the demo has no insight, send the reminder without a tip. Never skip a reminder because insights are missing.
 The CDE reminder does not mention the CDE's colour rating.
 
 ## Guardrails
