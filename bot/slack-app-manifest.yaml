@@ -18,6 +18,7 @@ oauth_config:
       - im:write
       - im:history
       - im:read
+      - files:read
       - users:read
 settings:
   org_deploy_enabled: false
