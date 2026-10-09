@@ -1,0 +1,28 @@
+display_information:
+  name: Pondu Manager
+  description: Kaustub's CDE demo manager. Ask about demos and CDE ratings, and message CDEs.
+  background_color: "#1f2937"
+features:
+  app_home:
+    home_tab_enabled: false
+    messages_tab_enabled: true
+    messages_tab_read_only_enabled: false
+  bot_user:
+    display_name: Pondu Manager
+    always_online: true
+oauth_config:
+  scopes:
+    bot:
+      - chat:write
+      - im:write
+      - im:history
+      - im:read
+      - users:read
+settings:
+  event_subscriptions:
+    request_url: https://nrfushxgqjqtfdghkvak.supabase.co/functions/v1/pondu-bot
+    bot_events:
+      - message.im
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false
