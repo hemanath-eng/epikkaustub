@@ -1,4 +1,4 @@
-// Pondu Manager chatbot: Slack DM bot for the owners (Kaustubh, Hemanath).
+// Kaustub's PA: Slack DM bot for the owners (Kaustubh, Hemanath).
 // - Owners chat with it: it answers from Epik data (read-only SQL via Metabase) and can
 //   draft messages to CDEs. A CDE message only goes out after the owner replies "send".
 // - CDEs who reply to the bot are relayed to the owners.
@@ -14,6 +14,7 @@ const ANTHROPIC_KEY = Deno.env.get("ANTHROPIC_API_KEY") ?? "";
 const METABASE_KEY = Deno.env.get("METABASE_API_KEY") ?? "";
 const METABASE_URL = Deno.env.get("METABASE_URL") ?? "https://glassy-surf.metabaseapp.com";
 const MODEL = Deno.env.get("CLAUDE_MODEL") ?? "claude-sonnet-5-5";
+const WORKSPACE_ID = Deno.env.get("ANTHROPIC_WORKSPACE_ID") ?? "";
 const OWNERS = new Set((Deno.env.get("OWNER_IDS") ?? "U09DQDPAVDX,U09DGS9MB9U").split(",").map((s) => s.trim()));
 
 const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
@@ -101,7 +102,7 @@ const TOOLS = [
 
 function systemPrompt(owner: string) {
   const ist = new Date(Date.now() + 5.5 * 3600 * 1000).toISOString().replace("T", " ").slice(0, 16);
-  return `You are Pondu Manager, the CDE demo manager assistant at Epik, chatting with ${owner} on Slack. Now: ${ist} IST.
+  return `You are Kaustub's PA, a personal assistant at Epik that manages the CDE demos, chatting with ${owner} on Slack. Now: ${ist} IST.
 Be brief, direct and practical. Slack formatting: *bold*, bullets with "-", no markdown tables, no headings.
 
 You help the owner understand yesterday/this week's demos, how each CDE (customer delight executive) is doing, which customers need follow-up, and you can message CDEs for them.
@@ -126,7 +127,12 @@ async function claudeTurn(owner: string, history: { role: string; content: strin
   for (let step = 0; step < 7; step++) {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: { "x-api-key": ANTHROPIC_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      headers: {
+        "x-api-key": ANTHROPIC_KEY,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+        ...(WORKSPACE_ID ? { "anthropic-workspace-id": WORKSPACE_ID } : {}),
+      },
       body: JSON.stringify({ model: MODEL, max_tokens: 1500, system: systemPrompt(owner), tools: TOOLS, messages }),
       signal: AbortSignal.timeout(110000),
     });
@@ -212,7 +218,11 @@ async function handleOwner(e: { user: string; text: string; channel: string }) {
   const history = (hist ?? []).reverse();
   while (history.length && history[0].role !== "user") history.shift();
   const answer = await claudeTurn(e.user === "U09DQDPAVDX" ? "Kaustubh" : "Hemanath", history);
-  await db.from("pondu_messages").insert({ owner_id: e.user, role: "assistant", content: answer });
+  if (!answer.startsWith("Sorry, I could not reach Claude")) {
+    await db.from("pondu_messages").insert({ owner_id: e.user, role: "assistant", content: answer });
+  } else {
+    await db.from("pondu_messages").delete().eq("owner_id", e.user).eq("role", "user").eq("content", text);
+  }
   await say(e.channel, answer);
 }
 

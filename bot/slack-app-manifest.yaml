@@ -1,6 +1,6 @@
 display_information:
-  name: Pondu Manager
-  description: Kaustub's CDE demo manager. Ask about demos and CDE ratings, and message CDEs.
+  name: Kaustub's PA
+  description: Kaustub's personal assistant for CDE demos. Ask about demos and CDE ratings, and message CDEs.
   background_color: "#1f2937"
 features:
   app_home:
@@ -8,7 +8,7 @@ features:
     messages_tab_enabled: true
     messages_tab_read_only_enabled: false
   bot_user:
-    display_name: Pondu Manager
+    display_name: Kaustub's PA
     always_online: true
 oauth_config:
   scopes:
