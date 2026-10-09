@@ -14,6 +14,7 @@ oauth_config:
   scopes:
     bot:
       - chat:write
+      - chat:write.customize
       - im:write
       - im:history
       - im:read

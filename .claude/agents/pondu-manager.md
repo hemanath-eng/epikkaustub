@@ -51,7 +51,7 @@ Send one DM (the user id works as the channel) with:
 ```bash
 python3 -I - <<'PY' > /tmp/msg.json
 import json
-print(json.dumps({"channel": "<SLACK_USER_ID>", "text": "<message text>",
+print(json.dumps({"channel": "<SLACK_USER_ID>", "text": "<message text>", "username": "Kaustub's PA",
                   "unfurl_links": False, "unfurl_media": False}))
 PY
 curl -sS -X POST https://slack.com/api/chat.postMessage \
@@ -59,7 +59,7 @@ curl -sS -X POST https://slack.com/api/chat.postMessage \
      -H "Content-Type: application/json; charset=utf-8" -d @/tmp/msg.json
 ```
 
-Build the JSON with Python so quotes and newlines in the text are escaped. A reply with
+Build the JSON with Python so quotes and newlines in the text are escaped. If Slack answers `missing_scope`, resend the same message once without the `username` field. A reply with
 `"ok": true` means sent; any other reply is a failure for that person (record `error`, do not
 mark them as messaged, mention them in the owner summary). Slack uses `*bold*`, not `**bold**`.
 

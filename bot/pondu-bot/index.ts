@@ -15,6 +15,7 @@ const METABASE_KEY = Deno.env.get("METABASE_API_KEY") ?? "";
 const METABASE_URL = Deno.env.get("METABASE_URL") ?? "https://glassy-surf.metabaseapp.com";
 const MODEL = Deno.env.get("CLAUDE_MODEL") ?? "claude-sonnet-5-5";
 const WORKSPACE_ID = Deno.env.get("ANTHROPIC_WORKSPACE_ID") ?? "";
+const BOT_NAME = Deno.env.get("BOT_NAME") ?? "Kaustub's PA";
 const OWNERS = new Set((Deno.env.get("OWNER_IDS") ?? "U09DQDPAVDX,U09DGS9MB9U").split(",").map((s) => s.trim()));
 
 const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
@@ -23,13 +24,21 @@ const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SE
 const enc = new TextEncoder();
 
 // ---------- Slack helpers ----------
-async function slack(method: string, body: Record<string, unknown>) {
+async function slackCall(method: string, body: Record<string, unknown>) {
   const r = await fetch(`https://slack.com/api/${method}`, {
     method: "POST",
     headers: { "Content-Type": "application/json; charset=utf-8", Authorization: `Bearer ${SLACK_TOKEN}` },
     body: JSON.stringify(body),
   });
-  const j = await r.json();
+  return await r.json();
+}
+// Messages carry our display name explicitly (needs the chat:write.customize scope).
+// If the scope has not been granted yet, fall back to a plain message.
+async function slack(method: string, body: Record<string, unknown>) {
+  let j = method === "chat.postMessage" && !body.username
+    ? await slackCall(method, { ...body, username: BOT_NAME })
+    : await slackCall(method, body);
+  if (!j.ok && j.error === "missing_scope" && method === "chat.postMessage") j = await slackCall(method, body);
   if (!j.ok) console.error("slack error", method, j.error);
   return j;
 }
